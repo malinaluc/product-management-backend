@@ -1,7 +1,7 @@
-import {OrderProduct} from "../types/orderProduct.types";
 import mongoose, {Schema} from "mongoose";
+import {OrderProduct} from "../types/product.types";
 
-export interface OrderDocument extends Document {
+export interface IOrderDocument extends Document {
     userId: string;
     products: OrderProduct[];
     totalAmount: number;
@@ -19,6 +19,6 @@ const OrderSchema: Schema= new Schema({
         required: true
     },
     totalAmount: {type: Number, required: true}
-})
+});
 
-export const OrderModel = mongoose.model<OrderDocument>("Order", OrderSchema);
+export const OrderModel = mongoose.model<IOrderDocument>("Order", OrderSchema);

@@ -27,7 +27,7 @@ export class App {
         new OrderRouter(router);
 
         this.app.use('/api-v1',router);
-    }
+    };
 
     public start(): void {
         this.app.listen(this.config.port, () => {

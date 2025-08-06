@@ -1,5 +1,7 @@
 import { Router, Request, Response } from "express";
 import { OrderService } from "../services/order.service";
+import {validateData} from "../middleware/validation.middleware";
+import {createOrderSchema, updateOrderSchema} from "../schemas/order.schema";
 
 export class OrderRouter {
     private orderService: OrderService;
@@ -8,32 +10,33 @@ export class OrderRouter {
         this.router = router;
         this.orderService = new OrderService();
         this.initRoutes();
-    }
+    };
 
     private initRoutes() {
-        this.router.get("/orders", this.getAll);
-        this.router.get("/orders/:id", this.getById);
-        this.router.post("/orders", this.create);
-        this.router.delete("/orders/:id", this.delete);
-    }
+        this.router.get("/orders", this.getAll.bind(this));
+        this.router.get("/orders/:id", this.getById.bind(this));
+        this.router.post("/orders", validateData(createOrderSchema),this.create.bind(this));
+        this.router.delete("/orders/:id", this.delete.bind(this));
+        this.router.put("/orders/:id", validateData(updateOrderSchema),this.update.bind(this));
+    };
 
     private getAll = async (_req: Request, res: Response) => {
         try{
             const orders = await this.orderService.getAll();
             res.status(200).json({ data: orders, statusCode: 200 });
         } catch (err) {
-            res.status(500).json("Server error");
+            res.status(500).json({error: "Server error"});
         }
     };
 
     private getById = async (req: Request, res: Response) => {
         try {
-            const order = this.orderService.getById(req.params.id!);
+            const order = await this.orderService.getById(req.params.id!);
             order
                 ? res.status(200).json({data: order, statusCode: 200})
                 : res.status(404).json("Order not found");
         } catch (err) {
-            res.status(500).json("Server error");
+            res.status(500).json({error: "Server error"});
         }
     };
 
@@ -46,8 +49,19 @@ export class OrderRouter {
 
             const order = await this.orderService.create(userId, products);
             res.status(201).json({ data: order, statusCode: 201 });
-        } catch (err: any) {
-            res.status(400).json("Cannot create order");
+        } catch (err) {
+            res.status(400).json({error: "Cannot create order"});
+        }
+    };
+
+    private update = async (req: Request, res: Response) => {
+        try {
+            const updatedOrder = await this.orderService.update(req.params.id!, req.body);
+            updatedOrder
+                ? res.status(200).json({ data: updatedOrder, statusCode: 200 })
+                : res.status(404).json("Order not found");
+        } catch (err) {
+            res.status(500).json({error: "Server error"});
         }
     };
 
@@ -58,7 +72,7 @@ export class OrderRouter {
                 ? res.sendStatus(200)
                 : res.status(404).json("Order not found");
         } catch (err) {
-            res.status(500).json("Server error");
+            res.status(500).json({error: "Server error"});
         }
     };
 }
