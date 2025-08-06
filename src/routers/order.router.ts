@@ -1,23 +1,34 @@
 import { Router, Request, Response } from "express";
 import { OrderService } from "../services/order.service";
-import {validateData} from "../middleware/validation.middleware";
 import {createOrderSchema, updateOrderSchema} from "../schemas/order.schema";
+import {registerCrudRoutes} from "../utils/factories/crud.routes";
 
 export class OrderRouter {
     private orderService: OrderService;
 
-    constructor(private router: Router) {
+    constructor(private readonly router: Router) {
         this.router = router;
         this.orderService = new OrderService();
         this.initRoutes();
     };
 
     private initRoutes() {
-        this.router.get("/orders", this.getAll.bind(this));
-        this.router.get("/orders/:id", this.getById.bind(this));
-        this.router.post("/orders", validateData(createOrderSchema),this.create.bind(this));
-        this.router.delete("/orders/:id", this.delete.bind(this));
-        this.router.put("/orders/:id", validateData(updateOrderSchema),this.update.bind(this));
+        registerCrudRoutes(
+            {
+                router: this.router,
+                path: "orders",
+                handlers: {
+                    getAll: this.getAll,
+                    getById: this.getById,
+                    create: this.create,
+                    update: this.update,
+                    delete: this.delete
+                },
+                schemas: {
+                    create: createOrderSchema,
+                    update: updateOrderSchema
+                }
+            });
     };
 
     private getAll = async (_req: Request, res: Response) => {

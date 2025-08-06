@@ -1,24 +1,35 @@
 import { Router, Request, Response } from "express";
 import { ProductService } from "../services/product.service";
 import {FilterProduct} from "../types/product.types";
-import {validateData} from "../middleware/validation.middleware";
 import {createProductSchema, updateProductSchema} from "../schemas/product.schema";
+import {registerCrudRoutes} from "../utils/factories/crud.routes";
 
 export class ProductRouter {
     private productService: ProductService;
 
-    constructor(private router: Router) {
+    constructor(private readonly router: Router) {
         this.router = router;
         this.productService = new ProductService();
         this.initRoutes();
     };
 
     private initRoutes() {
-        this.router.get("/products", this.getAll);
-        this.router.get("/products/:id", this.getById);
-        this.router.post("/products",validateData(createProductSchema), this.create);
-        this.router.put("/products/:id", validateData(updateProductSchema), this.update);
-        this.router.delete("/products/:id", this.delete);
+        registerCrudRoutes(
+            {
+                router: this.router,
+                path: "products",
+                handlers: {
+                    getAll: this.getAll,
+                    getById: this.getById,
+                    create: this.create,
+                    update: this.update,
+                    delete: this.delete
+            },
+            schemas: {
+                create: createProductSchema,
+                update: updateProductSchema
+            }
+        });
     };
 
     private getAll = async (req: Request, res: Response) => {
