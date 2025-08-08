@@ -14,7 +14,7 @@ export function validateData(schema: ZodType<any,any,any>) {
                 }))
                 res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid data', details: errorMessages });
             } else {
-                res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error' });
+                res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Internal Server Error'});
             }
         }
     };

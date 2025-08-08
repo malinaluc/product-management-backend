@@ -2,6 +2,8 @@ import { Router, Request, Response } from "express";
 import { OrderService } from "../services/order.service";
 import {createOrderSchema, updateOrderSchema} from "../schemas/order.schema";
 import {registerCrudRoutes} from "../utils/factories/crud.routes";
+import {authenticate} from "../middlewares/authentication.middleware";
+import {checkNotBanned} from "../middlewares/banned.middleware";
 
 export class OrderRouter {
     private orderService: OrderService;
@@ -27,6 +29,13 @@ export class OrderRouter {
                 schemas: {
                     create: createOrderSchema,
                     update: updateOrderSchema
+                },
+                middlewares: {
+                    getAll: [authenticate],
+                    getById: [authenticate],
+                    create: [authenticate, checkNotBanned],
+                    update: [authenticate, checkNotBanned],
+                    delete: [authenticate, checkNotBanned]
                 }
             });
     };
