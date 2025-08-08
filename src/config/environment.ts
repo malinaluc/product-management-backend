@@ -18,3 +18,6 @@ export const connectToDatabase = async () => {
         process.exit(1);
     }
 };
+
+export const JWT_SECRET_KEY: string = process.env.JWT_SECRET_KEY || "fallbackSecret";
+export const JWT_EXPIRES_IN: string = process.env.JWT_EXPIRES_IN || "1h";

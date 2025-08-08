@@ -3,6 +3,8 @@ import { ProductService } from "../services/product.service";
 import {FilterProduct} from "../types/product.types";
 import {createProductSchema, updateProductSchema} from "../schemas/product.schema";
 import {registerCrudRoutes} from "../utils/factories/crud.routes";
+import {authenticate} from "../middlewares/authentication.middleware";
+import {checkRole} from "../middlewares/authorization.middleware";
 
 export class ProductRouter {
     private productService: ProductService;
@@ -28,6 +30,11 @@ export class ProductRouter {
             schemas: {
                 create: createProductSchema,
                 update: updateProductSchema
+            },
+            middlewares: {
+                create: [authenticate, checkRole("create", "product")],
+                update: [authenticate, checkRole("update", "product")],
+                delete: [authenticate, checkRole("delete", "product")]
             }
         });
     };

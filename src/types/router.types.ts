@@ -14,9 +14,16 @@ export type CrudSchemas = {
     update?: ZodTypeAny;
 };
 
+export type CrudMiddlewares = {
+    create?: RequestHandler[];
+    update?: RequestHandler[];
+    delete?: RequestHandler[];
+};
+
 export type RegisterCrudRoutes = {
     router: Router;
     path: string;
     handlers: CrudRoutes;
     schemas: CrudSchemas;
+    middlewares?: CrudMiddlewares;
 };
