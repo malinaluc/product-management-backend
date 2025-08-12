@@ -11,3 +11,5 @@ build/
 # IDEs/editors
 .vscode/
 .idea/
+
+coverage/

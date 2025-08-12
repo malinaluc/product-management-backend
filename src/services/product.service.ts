@@ -2,7 +2,11 @@ import {ProductRepository} from "../repositories/product.repository";
 import {FilterProduct, Product, ProductDto} from "../types/product.types";
 
 export class ProductService {
-    private productRepository = new ProductRepository();
+    private productRepository: ProductRepository;
+
+    constructor() {
+        this.productRepository = new ProductRepository();
+    };
 
     public async getAll(data: FilterProduct): Promise<Product[]> {
         return await this.productRepository.getAll(data);
