@@ -20,12 +20,14 @@ describe("Product Service", () => {
 
         service = new ProductService();
 
-        const PR = ProductRepository as unknown as jest.Mock;
-        repoMock = PR.mock.instances[0] as RepoMock;
+        const PR = ProductRepository as unknown as jest.MockedClass<typeof ProductRepository>;
+        const ctorCall = PR.mock.results[0];
 
-        if (!repoMock) {
-            throw new Error("Repository mock instance not created");
+        if (!ctorCall || ctorCall.type !== "return" || !ctorCall.value) {
+            throw new Error("Repository mock return value not available");
         }
+
+        repoMock = ctorCall.value as RepoMock;
     });
 
     describe("getAll", () => {

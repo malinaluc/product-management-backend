@@ -1,15 +1,7 @@
 import {ProductRepository} from "../../src/repositories/product.repository";
+import { ProductModel as PMExport } from "../../src/models/product.model";
 
-jest.mock("../../src/models/product.model", () => {
-    const ProductModel = jest.fn();
-
-    (ProductModel as any).find = jest.fn();
-    (ProductModel as any).findById = jest.fn();
-    (ProductModel as any).findByIdAndUpdate = jest.fn();
-    (ProductModel as any).findByIdAndDelete = jest.fn();
-
-    return {ProductModel};
-});
+jest.mock("../../src/models/product.model");
 
 type ProductModelMock = jest.Mock & {
     find: jest.Mock;
@@ -25,7 +17,14 @@ describe('ProductRepository', () => {
     beforeEach(() => {
         jest.clearAllMocks();
 
-        ProductModel = require('../../src/models/product.model').ProductModel as ProductModelMock;
+        ProductModel = PMExport as unknown as ProductModelMock;
+
+        ProductModel.mockReset();
+        ProductModel.find.mockReset();
+        ProductModel.findById.mockReset();
+        ProductModel.findByIdAndUpdate.mockReset();
+        ProductModel.findByIdAndDelete.mockReset();
+
         repo = new ProductRepository();
     });
 
@@ -112,7 +111,4 @@ describe('ProductRepository', () => {
             expect(result).toBe(false);
         });
     });
-
-
-
 })
