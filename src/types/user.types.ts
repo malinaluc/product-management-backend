@@ -5,6 +5,7 @@ export type User = {
     email: string;
     password: string;
     role: UserRole;
+    banned?: boolean;
 };
 
 export type UserDto = {
@@ -13,6 +14,7 @@ export type UserDto = {
     email: string;
     password: string;
     role: UserRole;
+    banned?: boolean;
 };
 
 export type UserRole = "admin" | "client";
@@ -28,6 +30,7 @@ export type UserSignUpDto = {
     lastName: string;
     email: string;
     role: UserRole;
+    banned?: boolean;
 };
 
 export type SignUpDto = {

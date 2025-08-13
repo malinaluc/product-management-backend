@@ -8,6 +8,9 @@ module.exports = {
     transform: { "^.+\\.ts$": ["ts-jest", { tsconfig: "tsconfig.json" }] },
     clearMocks: true,
 
+    setupFilesAfterEnv: ["<rootDir>/tests/e2e/utils/server.testkit.ts"],
+    testTimeout: 30000,
+
     collectCoverage: true,
     coverageDirectory: "coverage",
     coverageReporters: ["text", "lcov", "html"],

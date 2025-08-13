@@ -32,9 +32,10 @@ describe("Product Service", () => {
 
     describe("getAll", () => {
         it.each([
-            [{ category: "laptops", sort: "asc", page: 2, limit: 5 }],
-            [{ category: "phones", sort: "desc", page: 1, limit: 10 }],
-            [{}]
+            { _id: "64b7f5c1a1f2b4e89c0d1234", name: "Apple MacBook Air M2", price: 1199, stock: 15, category: "laptops" },
+            { _id: "64b7f5c1a1f2b4e89c0d1235", name: "Dell XPS 13", price: 999, stock: 8, category: "laptops" },
+            { _id: "64b7f5c1a1f2b4e89c0d1236", name: "Sony WH-1000XM5 Headphones", price: 399, stock: 25, category: "audio" },
+            { _id: "64b7f5c1a1f2b4e89c0d1237", name: "Samsung Galaxy S23 Ultra", price: 1299, stock: 10, category: "smartphones" }
         ])
         ("Returns list and forwards params correctly %j", async (input: any) => {
             const data = [{ _id: "1" }, { _id: "2" }];
@@ -55,12 +56,17 @@ describe("Product Service", () => {
 
     describe("getById", () => {
         it("Returns product when it exists", async () => {
-            const prod = { _id: "p1", name: "X", price: 1, stock: 1, category: "c" };
+            const prod = [
+                { _id: "64b7f5c1a1f2b4e89c0d1234", name: "Apple MacBook Air M2", price: 1199, stock: 15, category: "laptops" },
+                { _id: "64b7f5c1a1f2b4e89c0d1235", name: "Dell XPS 13", price: 999, stock: 8, category: "laptops" },
+                { _id: "64b7f5c1a1f2b4e89c0d1236", name: "Sony WH-1000XM5 Headphones", price: 399, stock: 25, category: "audio" },
+                { _id: "64b7f5c1a1f2b4e89c0d1237", name: "Samsung Galaxy S23 Ultra", price: 1299, stock: 10, category: "smartphones" }
+            ];
             repoMock.getById.mockResolvedValueOnce(prod);
 
-            const result = await service.getById("p1");
+            const result = await service.getById("64b7f5c1a1f2b4e89c0d1234");
 
-            expect(repoMock.getById).toHaveBeenCalledWith("p1");
+            expect(repoMock.getById).toHaveBeenCalledWith("64b7f5c1a1f2b4e89c0d1234");
             expect(result).toEqual(prod);
         });
 
@@ -82,13 +88,13 @@ describe("Product Service", () => {
 
     describe("create", () => {
         it("Creates a new product and returns the entity", async () => {
-            const dto = {name: "NewProd", category: "NewCat", price: 100, stock: 200};
-            const savedProduct = {_id: "p2", ...dto};
-            repoMock.create.mockResolvedValueOnce(savedProduct);
+            const dto = { name: "iPhone 14 Pro", price: 1099, stock: 12, category: "smartphones" };
+            const saved = { _id: "64b7f5c1a1f2b4e89c0d1238", ...dto };
+            repoMock.create.mockResolvedValueOnce(saved);
 
             const result = await service.create(dto);
             expect(repoMock.create).toHaveBeenCalledWith(dto);
-            expect(result).toEqual(savedProduct);
+            expect(result).toEqual(saved);
         });
 
         it("Errors from repository", async () => {
@@ -102,9 +108,9 @@ describe("Product Service", () => {
         it("Returns true when success on delete ", async () => {
             repoMock.delete.mockResolvedValueOnce(true);
 
-            const result = await service.delete("p9");
+            const result = await service.delete("64b7f5c1a1f2b4e89c0d1238");
 
-            expect(repoMock.delete).toHaveBeenCalledWith("p9");
+            expect(repoMock.delete).toHaveBeenCalledWith("64b7f5c1a1f2b4e89c0d1238");
             expect(result).toBe(true);
         });
 
