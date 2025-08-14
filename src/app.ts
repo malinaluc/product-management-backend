@@ -13,27 +13,24 @@ export class App {
     constructor(config: AppConfig) {
         this.app = express();
         this.config = config;
-
         this.app.use(express.json());
-
-        this.initializeRoutes();
-        connectToDatabase();
     }
 
-    private initializeRoutes(): void {
+    private mountRoutes(): void {
         const router = Router();
-
         new ProductRouter(router);
         new UserRouter(router);
         new OrderRouter(router);
         new AuthRouter(router);
+        this.app.use("/api-v1", router);
+    }
 
-        this.app.use('/api-v1',router);
-    };
-
-    public start(): void {
+    public async start(): Promise<void> {
         console.log("JWT_SECRET_KEY:", process.env.JWT_SECRET_KEY);
         console.log("JWT_EXPIRES_IN:", process.env.JWT_EXPIRES_IN);
+        await connectToDatabase();
+        this.mountRoutes();
+
         this.app.listen(this.config.port, () => {
             console.log(`Server running on http://localhost:${this.config.port}`);
         });
